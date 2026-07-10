@@ -1,0 +1,12 @@
+{
+  "name": "project-1-token-explorer",
+  "version": "1.0.0",
+  "description": "See how text becomes tokens - Part 0 hands-on",
+  "type": "module",
+  "scripts": {
+    "tokens": "node token-explorer.js"
+  },
+  "dependencies": {
+    "gpt-tokenizer": "^2.8.1"
+  }
+}
