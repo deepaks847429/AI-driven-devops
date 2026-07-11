@@ -1,0 +1,10 @@
+
+# Dependencies - kabhi commit mat karo (npm install se wapas aa jaate hain)
+node_modules/
+
+# Environment secrets (aage Part 1 mein kaam aayega)
+.env
+
+# Logs
+*.log
+npm-debug.log*

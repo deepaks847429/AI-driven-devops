@@ -1,0 +1,16 @@
+{
+  "name": "part1-first-api-call",
+  "version": "1.0.0",
+  "description": "Part 1 - talk to an LLM via the API",
+  "type": "module",
+  "scripts": {
+    "chat": "node 01-first-call.js",
+    "knobs": "node 02-knobs.js",
+    "json": "node 03-structured-json.js",
+    "checkpoint": "node 04-checkpoint.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "openai": "^4.67.0"
+  }
+}
