@@ -1,0 +1,13 @@
+{
+  "name": "project-1-calculator-agent",
+  "version": "1.0.0",
+  "description": "Part 2 Project 1 - a hand-written agent loop with calculator tools",
+  "type": "module",
+  "scripts": {
+    "agent": "node calculator-agent.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "openai": "^4.67.0"
+  }
+}
