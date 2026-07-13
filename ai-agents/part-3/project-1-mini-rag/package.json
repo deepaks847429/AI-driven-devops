@@ -1,0 +1,13 @@
+{
+  "name": "project-1-mini-rag",
+  "version": "1.0.0",
+  "description": "Part 3 Project 1 - a minimal in-memory RAG (embeddings + cosine similarity, no vector DB)",
+  "type": "module",
+  "scripts": {
+    "rag": "node mini-rag.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "openai": "^4.67.0"
+  }
+}
