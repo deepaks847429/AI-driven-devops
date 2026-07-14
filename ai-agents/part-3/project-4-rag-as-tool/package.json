@@ -1,0 +1,13 @@
+{
+  "name": "project-4-rag-as-tool",
+  "version": "1.0.0",
+  "description": "Part 3 Project 4 - RAG exposed as a tool inside an agent loop",
+  "type": "module",
+  "scripts": {
+    "agent": "node rag-tool-agent.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "openai": "^4.67.0"
+  }
+}

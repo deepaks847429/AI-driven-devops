@@ -1,0 +1,13 @@
+{
+  "name": "project-3-rag-real-files",
+  "version": "1.0.0",
+  "description": "Part 3 Project 3 - RAG over real files with proper chunking",
+  "type": "module",
+  "scripts": {
+    "rag": "node rag-files.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "openai": "^4.67.0"
+  }
+}

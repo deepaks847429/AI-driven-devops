@@ -2,6 +2,13 @@
 
 > **Interview-ready revision notes.** Each concept is written to be self-contained: a plain definition, why it matters, a simple analogy, the mechanics, and common interview questions with crisp answers. We build this file up concept-by-concept as we learn.
 
+## 🌟 RAG pipeline at a glance (memorize this)
+> **Load files → split into chunks → embed chunks (vectors) → store in an index → embed the question → cosine-similarity to find the nearest chunks (top-k) → generate a grounded answer (+ citations).**
+>
+> Hinglish: *Files padho → tukdon mein todo → tukde embed karo (vectors) → index mein store karo → sawaal aaye to usko embed karo → cosine se sabse paas tukde dhoondho (top-3) → un tukdon se grounded jawab do (+ citations).*
+
+The first four steps are **indexing** (done once, offline); the rest are **querying** (per question).
+
 ## Why this part matters
 A plain LLM only knows its training data (general knowledge, frozen at a cutoff). It does **not** know your private/most-recent data, and it has **no memory** between calls. Part 3 fixes both:
 - **RAG** — give the model *your* data at question time (knowledge).
@@ -399,6 +406,48 @@ A complete RAG system in plain Node — **no vector database** (vectors are kept
 - Retrieval = embed → score by cosine similarity → sort → take top-k.
 - **Grounding** (answer only from context, else say "I don't know") is what keeps the agent on your data and limits hallucination.
 - The in-memory `index` here is exactly what a real vector DB (Qdrant/Pinecone) does — just at scale and with fast ANN indexing.
+
+### Project 3 — RAG over real files (chunking + citations) ✅
+**Folder:** `project-3-rag-real-files/` · **Run:** `node rag-files.js "your question"`
+
+Upgrades the mini-RAG to read **real files** from a `docs/` folder, **chunk** them with overlap, and **cite sources**.
+
+**The 6 code pieces:**
+1. **Setup** — imports incl. `fs` (read files) and `path` (build paths).
+2. **Read files** — `fs.readdirSync` lists the folder, `fs.readFileSync` reads each file's text.
+3. **`chunkText`** — split a big text into ~40-word chunks with ~10-word overlap (so meaning isn't cut at a boundary).
+4. **Chunk + embed all** — run `chunkText` on every doc (keeping each chunk's source filename), embed all chunks, build the `index` of `{ filename, text, vector }`.
+5. **Retrieve** — same cosine-similarity search, now returns top-3 and carries the filename through.
+6. **Generate + cite** — answer only from context, tag each chunk with `[filename]` so the model cites sources; print unique source files.
+
+**Observed runs:**
+- 3 files became **10 chunks** (chunking confirmed).
+- *"When can I deploy... Fridays?"* → 3 chunks from `deployment.md` → correct answer, cited `[deployment.md]`.
+- *"what if on-call doesn't respond?"* → chunks from `oncall.md` → correct escalation answer, cited `[oncall.md]`. Different question picked a different file — semantic search across multiple files.
+
+**Key takeaways:**
+- Chunking lets retrieval return the *precise* relevant passage (mid-paragraph), not a whole file.
+- Carrying the filename through the pipeline enables **citations** — essential for trust in real RAG.
+- This is the same pipeline as the mini-RAG; only "load real files" and "chunk them" were added.
+
+### Project 4 — RAG-as-a-Tool (agentic RAG) ✅
+**Folder:** `project-4-rag-as-tool/` · **Run:** `node rag-tool-agent.js "your message"`
+
+Combines **Part 2 (agent loop + tools)** with **Part 3 (RAG)**: retrieval is exposed as a `search_knowledge_base` **tool**, and the **agent decides when to call it**.
+
+**The pieces:**
+- *Reused:* setup, knowledge base, embedding index, cosine similarity, `retrieve` (the whole mini-RAG).
+- *New 1:* a **tool** `search_knowledge_base(query)` whose **description** tells the AI when to use it; a **dispatcher** (`runTool`) that runs `retrieve()` and returns the chunks.
+- *New 2:* the **Part 2 agent loop** — call the model with `tools`; if it returns `tool_calls`, run them and feed results back, else print the final answer.
+
+**Observed runs:**
+- *"hi, how are you?"* → **no search** (no tool call); the AI replied directly. It decided the knowledge base wasn't needed.
+- *"what is our deploy policy and when are deploys frozen?"* → the AI called the tool **twice** (`"deploy policy"` and `"deploy freeze"`), splitting the question into sub-queries itself, then combined the chunks into one answer.
+
+**Key takeaways:**
+- **Agentic RAG:** RAG becomes a tool the model calls *on demand*, not a step that always runs. The tool's **description** is what drives the AI's decision.
+- The agent can issue multiple searches (sub-queries) for a compound question — its own planning, not hardcoded.
+- This is exactly the Part 2 loop; only the tool it can call is new.
 
 ### Project 2 — Memory Agent (long-term, on disk) ✅
 **Folder:** `project-2-memory-agent/` · **Run:** `node memory-agent.js "your message"` (run twice to see it remember)
